@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+
+
+
+  
+
+
+<html class="theme-next muse use-motion" lang="zh-Hans">
+<head>
+  <meta charset="UTF-8"/>
+<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+<meta name="theme-color" content="#222">
+
+
+
+
+
+
+
+
+
+<meta http-equiv="Cache-Control" content="no-transform" />
+<meta http-equiv="Cache-Control" content="no-siteapp" />
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <link href="/lib/fancybox/source/jquery.fancybox.css?v=2.1.5" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+<link href="/lib/font-awesome/css/font-awesome.min.css?v=4.6.2" rel="stylesheet" type="text/css" />
+
+<link href="/css/main.css?v=5.1.4" rel="stylesheet" type="text/css" />
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png?v=5.1.4">
+
+
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png?v=5.1.4">
+
+
+  <link rel="mask-icon" href="/images/logo.svg?v=5.1.4" color="#222">
+
+
+
+
+
+  <meta name="keywords" content="Hexo, NexT" />
+
+
+
+
+
+
+
+
+
+
+<meta name="description" content="本文作为Dr Andrew Ng(吴恩达)在Coursera上面的公开课的学习笔记而存在 第一周 - Convolutional Neural Network 卷积神经网络基础Computer Vision 计算机视觉在深度学习的帮助下, 计算机视觉有了突破性的进展. 简单来说, 计算机视觉是教会计算机如何更好地去模拟人类”看”图像或者视频. 比如, 人看到一张猫的图片能够知道”这是一张猫的图片”">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Convolutional Neural Networks 卷积神经网络 (1)">
+<meta property="og:url" content="https://zhenyuechin.github.io/2018/01/25/ng2017convolutional1/index.html">
+<meta property="og:site_name" content="深度人工智障">
+<meta property="og:description" content="本文作为Dr Andrew Ng(吴恩达)在Coursera上面的公开课的学习笔记而存在 第一周 - Convolutional Neural Network 卷积神经网络基础Computer Vision 计算机视觉在深度学习的帮助下, 计算机视觉有了突破性的进展. 简单来说, 计算机视觉是教会计算机如何更好地去模拟人类”看”图像或者视频. 比如, 人看到一张猫的图片能够知道”这是一张猫的图片”">
+<meta property="og:locale" content="zh-Hans">
+<meta property="og:image" content="https://zhenyuechin.github.io/images/a_cat.jpeg">
+<meta property="og:image" content="https://zhenyuechin.github.io/images/object_detection.jpg">
+<meta property="og:image" content="https://zhenyuechin.github.io/images/vertical_edge_detection_examples.png">
+<meta property="og:image" content="https://zhenyuechin.github.io/images/convolution_operations.png">
+<meta property="og:image" content="https://zhenyuechin.github.io/images/conv_net_animation.gif">
+<meta property="og:image" content="https://zhenyuechin.github.io/images/horizontal_edge_detection_examples.png">
+<meta property="og:updated_time" content="2018-01-25T23:57:52.000Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Convolutional Neural Networks 卷积神经网络 (1)">
+<meta name="twitter:description" content="本文作为Dr Andrew Ng(吴恩达)在Coursera上面的公开课的学习笔记而存在 第一周 - Convolutional Neural Network 卷积神经网络基础Computer Vision 计算机视觉在深度学习的帮助下, 计算机视觉有了突破性的进展. 简单来说, 计算机视觉是教会计算机如何更好地去模拟人类”看”图像或者视频. 比如, 人看到一张猫的图片能够知道”这是一张猫的图片”">
+<meta name="twitter:image" content="https://zhenyuechin.github.io/images/a_cat.jpeg">
+
+
+
+<script type="text/javascript" id="hexo.configurations">
+  var NexT = window.NexT || {};
+  var CONFIG = {
+    root: '/',
+    scheme: 'Muse',
+    version: '5.1.4',
+    sidebar: {"position":"left","display":"post","offset":12,"b2t":false,"scrollpercent":false,"onmobile":false},
+    fancybox: true,
+    tabs: true,
+    motion: {"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"slideDownIn","post_body":"slideDownIn","coll_header":"slideLeftIn","sidebar":"slideUpIn"}},
+    duoshuo: {
+      userId: '0',
+      author: '博主'
+    },
+    algolia: {
+      applicationID: '',
+      apiKey: '',
+      indexName: '',
+      hits: {"per_page":10},
+      labels: {"input_placeholder":"Search for Posts","hits_empty":"We didn't find any results for the search: ${query}","hits_stats":"${hits} results found in ${time} ms"}
+    }
+  };
+</script>
+
+
+
+  <link rel="canonical" href="https://zhenyuechin.github.io/2018/01/25/ng2017convolutional1/"/>
+
+
+
+
+
+  <title>Convolutional Neural Networks 卷积神经网络 (1) | 深度人工智障</title>
+  
+
+
+
+
+
+
+
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
+
+  
+  
+    
+  
+
+  <div class="container sidebar-position-left page-post-detail">
+    <div class="headband"></div>
+
+    <header id="header" class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-wrapper">
+  <div class="site-meta ">
+    
+
+    <div class="custom-logo-site-title">
+      <a href="/"  class="brand" rel="start">
+        <span class="logo-line-before"><i></i></span>
+        <span class="site-title">深度人工智障</span>
+        <span class="logo-line-after"><i></i></span>
+      </a>
+    </div>
+      
+        <p class="site-subtitle">战斗力只有五的渣渣AI</p>
+      
+  </div>
+
+  <div class="site-nav-toggle">
+    <button>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+      <span class="btn-bar"></span>
+    </button>
+  </div>
+</div>
+
+<nav class="site-nav">
+  
+
+  
+    <ul id="menu" class="menu">
+      
+        
+        <li class="menu-item menu-item-home">
+          <a href="/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-home"></i> <br />
+            
+            首页
+          </a>
+        </li>
+      
+        
+        <li class="menu-item menu-item-archives">
+          <a href="/archives/" rel="section">
+            
+              <i class="menu-item-icon fa fa-fw fa-archive"></i> <br />
+            
+            归档
+          </a>
+        </li>
+      
+
+      
+    </ul>
+  
+
+  
+</nav>
+
+
+
+ </div>
+    </header>
+
+    <main id="main" class="main">
+      <div class="main-inner">
+        <div class="content-wrap">
+          <div id="content" class="content">
+            
+
+  <div id="posts" class="posts-expand">
+    
+
+  
+
+  
+  
+  
+
+  <article class="post post-type-normal" itemscope itemtype="http://schema.org/Article">
+  
+  
+  
+  <div class="post-block">
+    <link itemprop="mainEntityOfPage" href="https://zhenyuechin.github.io/2018/01/25/ng2017convolutional1/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="name" content="Zhenyue Qin">
+      <meta itemprop="description" content="">
+      <meta itemprop="image" content="/images/avatar.gif">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="深度人工智障">
+    </span>
+
+    
+      <header class="post-header">
+
+        
+        
+          <h1 class="post-title" itemprop="name headline">Convolutional Neural Networks 卷积神经网络 (1)</h1>
+        
+
+        <div class="post-meta">
+          <span class="post-time">
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-calendar-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">发表于</span>
+              
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-01-25T16:31:45+11:00">
+                2018-01-25
+              </time>
+            
+
+            
+
+            
+          </span>
+
+          
+            <span class="post-category" >
+            
+              <span class="post-meta-divider">|</span>
+            
+              <span class="post-meta-item-icon">
+                <i class="fa fa-folder-o"></i>
+              </span>
+              
+                <span class="post-meta-item-text">分类于</span>
+              
+              
+                <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+                  <a href="/categories/学习笔记/" itemprop="url" rel="index">
+                    <span itemprop="name">学习笔记</span>
+                  </a>
+                </span>
+
+                
+                
+              
+            </span>
+          
+
+          
+            
+          
+
+          
+          
+
+          
+
+          
+
+          
+
+        </div>
+      </header>
+    
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+
+      
+      
+
+      
+        <p><em>本文作为Dr Andrew Ng(吴恩达)在<a href="https://www.coursera.org/learn/convolutional-neural-networks/" target="_blank" rel="noopener">Coursera</a>上面的公开课的学习笔记而存在</em></p>
+<h1 id="第一周-Convolutional-Neural-Network-卷积神经网络基础"><a href="#第一周-Convolutional-Neural-Network-卷积神经网络基础" class="headerlink" title="第一周 - Convolutional Neural Network 卷积神经网络基础"></a>第一周 - Convolutional Neural Network 卷积神经网络基础</h1><h2 id="Computer-Vision-计算机视觉"><a href="#Computer-Vision-计算机视觉" class="headerlink" title="Computer Vision 计算机视觉"></a>Computer Vision 计算机视觉</h2><p>在深度学习的帮助下, 计算机视觉有了突破性的进展. 简单来说, 计算机视觉是教会计算机如何更好地去模拟人类”看”图像或者视频. 比如, 人看到一张猫的图片能够知道”这是一张猫的图片”. 我们想让计算机也获得这个能力. </p>
+<p>与深度学习结合之后, 有了突破性进展的计算机视觉领域包括自动驾驶, 人脸识别等. 从两个方面来看, 深度学习和计算机视觉的结合令人兴奋. 第一, 由于近年来有大量数据被创造以及计算机的计算速度的大幅度提高, 我们能够完成很多在之前不可能完成的任务. 我们有理由相信, 未来我们能够用深度学习做到更多不可思议的计算机视觉应用. 其次, 计算机视觉中的技术或许可以对其他领域造成很有益的启发. Dr Andrew Ng说他本人即使在语音识别的工作中, 收到了很多来自计算机视觉的技术的启发. </p>
+<p>总得来说, 深度学习主要帮助计算机视觉解决三种问题. 第一, 图像识别. 比如说下图是一只猫的图片, 我们怎么样才能够使计算机也能够识别出这是一只猫呢? </p>
+<p><img src="/images/a_cat.jpeg" alt="cat">[1]</p>
+<p>第二, 对象检测(Object detection). 比如说下图包含一些汽车们和行人们, 我们怎么样使得计算机能够识别出图片的哪些区域对应汽车们, 哪些区域对应行人们呢? </p>
+<p><img src="/images/object_detection.jpg" alt="object_detection">[2]</p>
+<p>第三, 艺术创作. 我本科期间的一个同学做了与此相关的工作, 他利用计算机创造一些绘画作品, 虽然我觉得他的计算机创造出来的”艺术品”和他本人创造出来的一样糟糕哈哈. </p>
+<p>细心的你可能注意到了, “嘿为什么我们需要卷积神经网络, 传统的深度神经网络不能解决这些问题吗”? 使用传统深度神经网络的一个问题是我们的输入太多了. 目前大家都喜欢”高清无码”图, 他们的分辨率很正常就能达到”1920X1080”. 再加上这是彩图, 所以一共会有”1920X1080X3=6220800”个值输入到神经网络中. 这太大了. </p>
+<p>所以, 我们需要卷积操作来降低输入的值的数量. 至于具体怎么做, 请看下回分解. </p>
+<h2 id="Edge-Detection-Example-边缘检测"><a href="#Edge-Detection-Example-边缘检测" class="headerlink" title="Edge Detection Example 边缘检测"></a>Edge Detection Example 边缘检测</h2><p>我本人对于边缘检测感到兴奋, 因为利用卷积操作来检测边缘是计算机模拟我们生物体操作的一个典型成功例子. 神经学家David Hubel和Torsten Wiesel在杀死了无数只猫之后, 发现动物在观察东西的时候, 是“卷积”的. 换句话说, 我们先看到物体的边缘, 然后把这些边缘组合起来看到更复杂的图像, 一层一层向上传播, 知道我们分析出了这个图像究竟是什么. </p>
+<p>卷积神经网络模拟了这个思想. 我们不再把整个图像作为输入值. 与此相对, 我们首先找出边缘, 然后把边缘作为输入. 这样我们就不会有过大的输入. </p>
+<p>那怎么样去找边缘呢? 我们仍然在模拟生物过程. 我们人类在看东西的时候是靠感光细胞. 如果两个相邻的感光细胞感受到的光的强度差别很大, 那么这两个感光细胞就知道边缘在他们上面. 我们使用”卷积”操作来模拟这个过程. 我将给出一个简单的例子. </p>
+<p>我们利用一个3X3的矩阵来模拟感光细胞. 卷积实际上是一个很简单的操作, 然而过程写出来却很困难. </p>
+<p>恳请你们结合上面的绿色式子以及图像来想象一下卷积操作是怎么回事儿(怎么样找竖着的边缘). 请注意中间那个星号(*)不是乘号, 是卷积的意思. </p>
+<p>这儿还有个例子, 帮助你确定你理解的对不对. </p>
+<p><img src="/images/vertical_edge_detection_examples.png" alt="vertical_edge_detection_examples">[2]</p>
+<p>中间那个矩阵就是感光细胞, 在卷积神经网络里面叫过滤器(filter). 左边一列全是1, 右边一列全是-1.这个值其实不重要, 只要他们互为相反数, 可以是2和-2, 也可以是3和-3. 请大家想象一下, 如果图像颜色一样的话, 那么卷积的结果将会是0. 如果两边颜色有差异, 那么差异越大, 卷积结果的绝对值也将越大. </p>
+<p><img src="/images/convolution_operations.png" alt="convolution_operations">[2]</p>
+<p>接下来这个动画或许能够进一步帮助你的理解. 在此, $\begin{bmatrix}4 &amp; 3 &amp; 4 \ 2 &amp; 4 &amp; 3 \ 2 &amp; 3 &amp; 4 \end{bmatrix}$ 为我们的过滤器. </p>
+<p><img src="/images/conv_net_animation.gif" alt="conv_net_animation">[3]</p>
+<h2 id="More-Edge-Detection-更多边缘检测"><a href="#More-Edge-Detection-更多边缘检测" class="headerlink" title="More Edge Detection 更多边缘检测"></a>More Edge Detection 更多边缘检测</h2><p>不难想象检测水平的边缘的过滤器会是什么样子(水平的). 请参阅下图. </p>
+<p><img src="/images/horizontal_edge_detection_examples.png" alt="horizontal_edge_detection_examples">[2]</p>
+<p>在神经网络中, 我们将不断改变过滤器中的值. 这将是卷积神经网络的主要学习过程. </p>
+<h2 id="Padding-衬垫"><a href="#Padding-衬垫" class="headerlink" title="Padding 衬垫"></a>Padding 衬垫</h2><p>现在我们知道了, 如果你有一个\(6 \times 6\)的图像和一个\(3 \times 3\)的过滤器, 你将获得一个\(4 \times 4\)的卷积结果. 更加一般地, 当你有一个$N \times N$的图像和$f \times f$的过滤器时, 卷积的尺寸将是$(n-f+1) \times (n-f+1)$. </p>
+<p>两个问题: 1. shrinking problem. 2. throwing away edge information.</p>
+<p>when the neural networks are very deep, and you keep shrinking. Then you will run into problems. </p>
+<p>You can pad more pixels at the edge. </p>
+<p>Valid convolution: no padding.<br>Same convolution: </p>
+<p>When f is odd, you can find a p so that the output size is the same as the input size. Normally we do not use an even filter size. (by convention)</p>
+<p>odd filters have a central pixel</p>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><p>[1]”Grey and White Short Fur Cat · Free Stock Photo”, Pexels.com, 2018. [Online]. Available: <a href="https://www.pexels.com/photo/grey-and-white-short-fur-cat-104827/" target="_blank" rel="noopener">https://www.pexels.com/photo/grey-and-white-short-fur-cat-104827/</a>. [Accessed: 25- Jan- 2018].</p>
+<p>[2]”Convolutional Neural Networks | Coursera”, Coursera, 2018. [Online]. Available: <a href="https://www.coursera.org/learn/convolutional-neural-networks/" target="_blank" rel="noopener">https://www.coursera.org/learn/convolutional-neural-networks/</a>. [Accessed: 25- Jan- 2018].</p>
+<p>[3]Saul Berardo, “What does the convolution step in a Convolutional Neural Network do?”, Stats.stackexchange.com, 2018. [Online]. Available: <a href="https://stats.stackexchange.com/questions/116362/what-does-the-convolution-step-in-a-convolutional-neural-network-do" target="_blank" rel="noopener">https://stats.stackexchange.com/questions/116362/what-does-the-convolution-step-in-a-convolutional-neural-network-do</a>. [Accessed: 25- Jan- 2018].</p>
+
+      
+    </div>
+    
+    
+    
+
+    
+
+    
+
+    
+
+    <footer class="post-footer">
+      
+
+      
+      
+      
+
+      
+        <div class="post-nav">
+          <div class="post-nav-next post-nav-item">
+            
+              <a href="/2018/01/24/such2017deep/" rel="next" title="Deep Neuro深度神经进化">
+                <i class="fa fa-chevron-left"></i> Deep Neuro深度神经进化
+              </a>
+            
+          </div>
+
+          <span class="post-nav-divider"></span>
+
+          <div class="post-nav-prev post-nav-item">
+            
+          </div>
+        </div>
+      
+
+      
+      
+    </footer>
+  </div>
+  
+  
+  
+  </article>
+
+
+
+    <div class="post-spread">
+      
+    </div>
+  </div>
+
+
+          </div>
+          
+
+
+          
+
+  
+
+
+
+        </div>
+        
+          
+  
+  <div class="sidebar-toggle">
+    <div class="sidebar-toggle-line-wrap">
+      <span class="sidebar-toggle-line sidebar-toggle-line-first"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-middle"></span>
+      <span class="sidebar-toggle-line sidebar-toggle-line-last"></span>
+    </div>
+  </div>
+
+  <aside id="sidebar" class="sidebar">
+    
+    <div class="sidebar-inner">
+
+      
+
+      
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
+
+      <section class="site-overview-wrap sidebar-panel">
+        <div class="site-overview">
+          <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
+            
+              <p class="site-author-name" itemprop="name">Zhenyue Qin</p>
+              <p class="site-description motion-element" itemprop="description"></p>
+          </div>
+
+          <nav class="site-state motion-element">
+
+            
+              <div class="site-state-item site-state-posts">
+              
+                <a href="/archives/">
+              
+                  <span class="site-state-item-count">3</span>
+                  <span class="site-state-item-name">日志</span>
+                </a>
+              </div>
+            
+
+            
+              
+              
+              <div class="site-state-item site-state-categories">
+                
+                  <span class="site-state-item-count">2</span>
+                  <span class="site-state-item-name">分类</span>
+                
+              </div>
+            
+
+            
+
+          </nav>
+
+          
+
+          
+
+          
+          
+
+          
+          
+
+          
+
+        </div>
+      </section>
+
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#第一周-Convolutional-Neural-Network-卷积神经网络基础"><span class="nav-number">1.</span> <span class="nav-text">第一周 - Convolutional Neural Network 卷积神经网络基础</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Computer-Vision-计算机视觉"><span class="nav-number">1.1.</span> <span class="nav-text">Computer Vision 计算机视觉</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Edge-Detection-Example-边缘检测"><span class="nav-number">1.2.</span> <span class="nav-text">Edge Detection Example 边缘检测</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#More-Edge-Detection-更多边缘检测"><span class="nav-number">1.3.</span> <span class="nav-text">More Edge Detection 更多边缘检测</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Padding-衬垫"><span class="nav-number">1.4.</span> <span class="nav-text">Padding 衬垫</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考文献"><span class="nav-number">1.5.</span> <span class="nav-text">参考文献</span></a></li></ol></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
+      
+
+      
+
+    </div>
+  </aside>
+
+
+        
+      </div>
+    </main>
+
+    <footer id="footer" class="footer">
+      <div class="footer-inner">
+        <div class="copyright">&copy; <span itemprop="copyrightYear">2018</span>
+  <span class="with-love">
+    <i class="fa fa-user"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">Zhenyue Qin</span>
+
+  
+</div>
+
+
+  <div class="powered-by">由 <a class="theme-link" target="_blank" href="https://hexo.io">Hexo</a> 强力驱动</div>
+
+
+
+  <span class="post-meta-divider">|</span>
+
+
+
+  <div class="theme-info">主题 &mdash; <a class="theme-link" target="_blank" href="https://github.com/iissnan/hexo-theme-next">NexT.Muse</a> v5.1.4</div>
+
+
+
+
+        
+
+
+
+
+
+
+
+        
+      </div>
+    </footer>
+
+    
+      <div class="back-to-top">
+        <i class="fa fa-arrow-up"></i>
+        
+      </div>
+    
+
+    
+
+  </div>
+
+  
+
+<script type="text/javascript">
+  if (Object.prototype.toString.call(window.Promise) !== '[object Function]') {
+    window.Promise = null;
+  }
+</script>
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery/index.js?v=2.1.3"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fastclick/lib/fastclick.min.js?v=1.0.6"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/jquery_lazyload/jquery.lazyload.js?v=1.9.7"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/velocity/velocity.ui.min.js?v=1.2.1"></script>
+  
+
+  
+  
+    <script type="text/javascript" src="/lib/fancybox/source/jquery.fancybox.pack.js?v=2.1.5"></script>
+  
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/utils.js?v=5.1.4"></script>
+
+  <script type="text/javascript" src="/js/src/motion.js?v=5.1.4"></script>
+
+
+
+  
+  
+
+  
+  <script type="text/javascript" src="/js/src/scrollspy.js?v=5.1.4"></script>
+<script type="text/javascript" src="/js/src/post-details.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  <script type="text/javascript" src="/js/src/bootstrap.js?v=5.1.4"></script>
+
+
+
+  
+
+
+  
+
+
+
+
+	
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+  
+
+  
+
+  
+
+  
+  
+
+  
+  
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {
+          inlineMath: [ ['$','$'], ["\\(","\\)"]  ],
+          processEscapes: true,
+          skipTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code']
+        }
+      });
+    </script>
+
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Queue(function() {
+        var all = MathJax.Hub.getAllJax(), i;
+        for (i=0; i < all.length; i += 1) {
+          all[i].SourceElement().parentNode.className += ' has-jax';
+        }
+      });
+    </script>
+    <script type="text/javascript" src="//cdn.bootcss.com/mathjax/2.7.1/latest.js?config=TeX-AMS-MML_HTMLorMML"></script>
+  
+
+
+  
+
+  
+
+</body>
+</html>
