@@ -49,6 +49,7 @@ While evolution strategies have shown to be effective at black-box optimization,
 
 :eyes: Ask Prof Bob McKay for what is "parameters of density". 
 
+接下来是对于维基百科关于"Natural Evolution Strategies"的翻译. 
 
 
 
