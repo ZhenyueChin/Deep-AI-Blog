@@ -2,7 +2,7 @@
 title: Convolutional Neural Networks 卷积神经网络 (1)
 date: 2018-01-25 16:31:45
 tags:
-categories: 学习笔记
+categories: 深度学习笔记
 ---
 
 _本文作为Dr Andrew Ng(吴恩达)在[Coursera](https://www.coursera.org/learn/convolutional-neural-networks/)上面的公开课的学习笔记而存在_
@@ -19,11 +19,11 @@ _本文作为Dr Andrew Ng(吴恩达)在[Coursera](https://www.coursera.org/learn
 
 总得来说, 深度学习主要帮助计算机视觉解决三种问题. 第一, 图像识别. 比如说下图是一只猫的图片, 我们怎么样才能够使计算机也能够识别出这是一只猫呢? 
 
-![cat](https://zhenyuechin.github.io/images/a_cat.jpeg)[1]
+![cat](https://zhenyuechin.github.io/images/coursera-cnn/a_cat.jpeg)[1]
 
 第二, 对象检测(Object detection). 比如说下图包含一些汽车们和行人们, 我们怎么样使得计算机能够识别出图片的哪些区域对应汽车们, 哪些区域对应行人们呢? 
 
-![object_detection](https://zhenyuechin.github.io/images/object_detection.jpg)[2]
+![object_detection](https://zhenyuechin.github.io/images/coursera-cnn/object_detection.jpg)[2]
 
 第三, 艺术创作. 我本科期间的一个同学做了与此相关的工作, 他利用计算机创造一些绘画作品, 虽然我觉得他的计算机创造出来的"艺术品"和他本人创造出来的一样糟糕哈哈. 
 
@@ -41,13 +41,13 @@ _本文作为Dr Andrew Ng(吴恩达)在[Coursera](https://www.coursera.org/learn
 
 我们利用一个3X3的矩阵来模拟感光细胞. 卷积实际上是一个很简单的操作, 然而过程写出来却很困难. 
 
-![convolution_operations](https://zhenyuechin.github.io/images/convolution_operations.png)[2]
+![convolution_operations](https://zhenyuechin.github.io/images/coursera-cnn/convolution_operations.png)[2]
 
 恳请你们结合上面的绿色式子以及图像来想象一下卷积操作是怎么回事儿(怎么样找竖着的边缘). 请注意中间那个星号(*)不是乘号, 是卷积的意思. 
 
 这儿还有个例子, 帮助你确定你理解的对不对. 
 
-![vertical_edge_detection_examples](https://zhenyuechin.github.io/images/vertical_edge_detection_examples.png)[2]
+![vertical_edge_detection_examples](https://zhenyuechin.github.io/images/coursera-cnn/vertical_edge_detection_examples.png)[2]
 
 中间那个矩阵就是感光细胞, 在卷积神经网络里面叫过滤器(filter). 左边一列全是1, 右边一列全是-1.这个值其实不重要, 只要他们互为相反数, 可以是2和-2, 也可以是3和-3. 请大家想象一下, 如果图像颜色一样的话, 那么卷积的结果将会是0. 如果两边颜色有差异, 那么差异越大, 卷积结果的绝对值也将越大. 
 
@@ -55,13 +55,13 @@ _本文作为Dr Andrew Ng(吴恩达)在[Coursera](https://www.coursera.org/learn
 
 接下来这个动画或许能够进一步帮助你的理解. 在此, $$\begin{bmatrix}4 & 3 & 4 \\\\ 2 & 4 & 3 \\\\ 2 & 3 & 4 \end{bmatrix}$$ 为我们的过滤器. 
 
-![conv_net_animation](https://zhenyuechin.github.io/images/conv_net_animation.gif)[3]
+![conv_net_animation](https://zhenyuechin.github.io/images/coursera-cnn/conv_net_animation.gif)[3]
 
 ## More Edge Detection 更多边缘检测
 
 不难想象检测水平的边缘的过滤器会是什么样子(水平的). 请参阅下图. 
 
-![horizontal_edge_detection_examples](https://zhenyuechin.github.io/images/horizontal_edge_detection_examples.png)[2]
+![horizontal_edge_detection_examples](https://zhenyuechin.github.io/images/coursera-cnn/horizontal_edge_detection_examples.png)[2]
 
 在神经网络中, 我们将不断改变过滤器中的值. 这将是卷积神经网络的主要学习过程. 
 
@@ -73,7 +73,7 @@ _本文作为Dr Andrew Ng(吴恩达)在[Coursera](https://www.coursera.org/learn
 
 为了解决这些问题, 我们在图像外围人为地加上一些像素层. 这些人为加入的层为衬垫(padding)格. 如下图所示, 对于一个原先尺寸为$6 \times 6$的图像, 假设我们加入了$p=1$个padding格, 那么我们现在的图像将会有$6+1+1=8$层. 卷积之后, 我们仍然能够有$6 \times 6$的尺寸. 不难想象, 一般地, 我们卷积的结果的尺寸将会如以下公式. 
 
-![padding](https://zhenyuechin.github.io/images/padding.png)[2]
+![padding](https://zhenyuechin.github.io/images/coursera-cnn/padding.png)[2]
 
 对于衬垫, 我们有一些术语. 
 
@@ -99,7 +99,7 @@ $$
  \end{equation}
 $$
 
-![summary_of_conv](https://zhenyuechin.github.io/images/summary_of_conv.png)[2]
+![summary_of_conv](https://zhenyuechin.github.io/images/coursera-cnn/summary_of_conv.png)[2]
 
 至于为什么取底数(floor)而不是取顶数(ceiling)也很好理解, 我们的过滤器不能飞出我们的图像之外呀. 换句话说, 我们的图像不能够多给我们的过滤器多走一步. 
 
@@ -109,15 +109,15 @@ $$
 
 我们在小时候学过三原色的原理. 换句话说, 每一个图像可以想象成三种颜色的矩阵堆砌而成, 红, 绿, 蓝, 如下图所示. 
 
-![rgb](/images/rgb.png)[2]
+![rgb](https://zhenyuechin.github.io/images/coursera-cnn/images/rgb.png)[2]
 
 因此, 对于每一个彩图, 我们可以使用三个不同的过滤器. 每一个过滤器对应不同的颜色. 然后, 我们把三个过滤器的卷积结果加起来作为最终的卷积结果. 换句话说, 我们将一个3D的输入彩图, 变成了一个2D的结果矩阵. 如下图所示, 左边的输入是3D的, 右边的输出是2D的. 
 
-![convolutions_on_rgb_image](https://zhenyuechin.github.io/images/convolutions_on_rgb_image.png)[2]
+![convolutions_on_rgb_image](https://zhenyuechin.github.io/images/coursera-cnn/convolutions_on_rgb_image.png)[2]
 
 之前我们讨论过, 竖直的过滤器和水平的过滤器是两种过滤器. 有时我们甚至需要45度的过滤器. 也就是说, 对于同一个输入, 我们需要不止一种过滤器. 比如, 我们可能同时有检测竖直边界的过滤器和检测水平边界的过滤器. 这两种过滤器各由三个过滤器组成, 用来检测红绿蓝色. 每一种检测不同边界的过滤器将会输出一个2D的图像. 如果我们有两种过滤器, 我们将会输出两个2D的图像. 如下图所示. 中间的为过滤器. 上面的三个过滤器可以对应检测竖直边界, 下面的三个可以对应检测水平边界. 
 
-![multiple_layers](https://zhenyuechin.github.io/images/multiple_layers.png)[2]
+![multiple_layers](https://zhenyuechin.github.io/images/coursera-cnn/multiple_layers.png)[2]
 
 ## One Layer of a Convolutional Network 卷积网络的一层
 
@@ -135,7 +135,7 @@ Dr Andrew Ng提出了一个很好的练习, 我把它放在这里:
 
 Dr Andrew Ng有一个很好的总结课件, 我将把它放在这里作为本小结的总结. 
 
-![summary_of_notation](https://zhenyuechin.github.io/images/summary_of_notation.png)[2]
+![summary_of_notation](https://zhenyuechin.github.io/images/coursera-cnn/summary_of_notation.png)[2]
 
 ## A Simple Convolution Network Example 一个简单的卷积神经网络例子
 
@@ -145,7 +145,7 @@ Dr Andrew Ng有一个很好的总结课件, 我将把它放在这里作为本小
 
 紧接着, 我们把那40个$7 \times 7$的图像写成一个竖着的向量的形式, 作为深度神经网络的输入向量. 经过线性变化和激励函数变换之后, 我们最终给出分类结果(e.g. 输入的图像到底是不是一个猫的图像). 
 
-![example_convnet](https://zhenyuechin.github.io/images/example_convnet.png)[2]
+![example_convnet](https://zhenyuechin.github.io/images/coursera-cnn/example_convnet.png)[2]
 
 值得注意的是, 当我们的跨步值大于1时, 我们的结果图像的尺寸会下降快很多. 另外, 在深度增加时, 一般情况下, 是图像尺寸会减小, 然而图像的频道(channel)会增加. 频道是说有多少个输出的图像. 
 
@@ -155,13 +155,13 @@ Dr Andrew Ng有一个很好的总结课件, 我将把它放在这里作为本小
 
 我们首先来介绍什么是池化(pooling). 池化是一个很简单的概念. 我们以"最大池化"作为例子. 比如下图的$4 \times 4$的图像, 我们把它平均分割成4块区域, 每一块区域取最大值. 这样我们能够获得一个$2 \times 2$的区域. 在此, 我们相当于使用了一个f=2, s=2的过滤器. 
 
-![pooling_layer_max_pooling](https://zhenyuechin.github.io/images/pooling_layer_max_pooling.png)[2]
+![pooling_layer_max_pooling](https://zhenyuechin.github.io/images/coursera-cnn/pooling_layer_max_pooling.png)[2]
 
 这有点类似于人民代表大会制度. 人民代表大会制度是从每个镇选出最有影响力的人大代表, 然后在每个县选出最有影响力的镇人大代表, 逐层递增, 直到选出来全国人大代表. 我们的池化层也是这样, 我们在每一层选出来最有影响力的特征, 然后让它代表它所在的区域. 这样, 不太好的特征可以被好的特征"代表", 从而使整个网络并不会因为一些不好的特征影响. 值得注意的是, 池化层是没有参数的. 
 
 我们给以个f=3, s=1的池化层作为一个例子来检查理解的正确性. 
 
-![max_pooling_2](https://zhenyuechin.github.io/images/max_pooling_2.png)[2]
+![max_pooling_2](https://zhenyuechin.github.io/images/coursera-cnn/max_pooling_2.png)[2]
 
 与最大池化相对的, 还有平均池化. 然而, 平均池化并不常用. 因为如果在一个区域存在不好的特征的话, 平均池化还是会引入这些不好的特征, 然而最大池化可以把这些不好的特征"和谐"掉. 
 
@@ -171,7 +171,7 @@ Dr Andrew Ng有一个很好的总结课件, 我将把它放在这里作为本小
 
 值得注意的是, 在卷积神经网络中, 我们一般只将有参数的层看成一个新的层. 换句话说, 我们不将池化层看作一个新的层. 
 
-![cnn_example](https://zhenyuechin.github.io/images/cnn_example.png)[2]
+![cnn_example](https://zhenyuechin.github.io/images/coursera-cnn/cnn_example.png)[2]
 
 ## Why Convolutions? 为什么卷积？ 
 
